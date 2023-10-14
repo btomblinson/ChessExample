@@ -7,12 +7,12 @@ using ChessExample.ChessBoard.Enums;
 
 namespace ChessExample.ChessBoard.Core
 {
-	public class ChessBoardMoveResult
+	public class ChessBoardTurnResult
 	{
 		public bool IsCheck { get; set; }
 
 		public bool IsCheckmate { get; set; }
 
-		public ChessBoardMoveResultType Result { get; set; }
+		public ChessBoardTurnResultType Result { get; set; }
 	}
 }

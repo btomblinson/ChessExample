@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessExample.ChessBoard.Enums
 {
-	public enum ChessBoardMoveResultType
+	public enum ChessBoardTurnResultType
 	{
 		Continue,
 

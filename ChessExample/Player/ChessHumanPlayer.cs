@@ -11,17 +11,17 @@ using ChessExample.ChessPiece.Enums;
 
 namespace ChessExample.Player
 {
-    public class HumanPlayer : BasePlayer
+    public class ChessHumanPlayer : ChessBasePlayer
 	{
 		public ChessPieceColor Color { get; set; }
 
-		public HumanPlayer(ChessPieceColor color)
+		public ChessHumanPlayer(ChessPieceColor color)
 		{
 			Color = color;
 			IsHuman = true;
 		}
 
-		public override List<ChessBoardMove> DetermineMoves(ChessBoard.ChessBoard board)
+		public override ChessBoardTurn DetermineTurn(ChessBoard.ChessBoard board)
 		{
 			Console.WriteLine($"What move do you want to do? ");
 			string response = string.Empty;
@@ -29,11 +29,11 @@ namespace ChessExample.Player
 			{
 				response = Console.ReadLine() ?? string.Empty;
 				board.CurrentMoveColor = Color;
-				SanBuilder.TryParse(board, response, out List<ChessBoardMove> moves);
-				return moves;
+				SanBuilder.TryParse(board, response, out ChessBoardTurn turn);
+				return turn;
 			}
 
-			throw new ArgumentException("Unable to parse move. ");
+			throw new ArgumentException("Unable to parse turn. ");
 		}
 	}
 }

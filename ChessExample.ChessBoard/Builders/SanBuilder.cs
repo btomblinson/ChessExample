@@ -15,14 +15,14 @@ namespace ChessExample.ChessBoard.Builders
 {
 	public static class SanBuilder
 	{
-		public static bool TryParse(ChessBoard board, string san, out List<ChessBoardMove> moves)
+		public static bool TryParse(ChessBoard board, string san, out ChessBoardTurn turn)
 		{
 			bool isCapture = false;
 			bool isCastle = false;
 			bool isCheck = false;
 			bool isCheckMate = false;
 
-			moves = new List<ChessBoardMove>();
+			turn = new ChessBoardTurn();
 			var matches = Regexes.RegexSanOneMove.Matches(san);
 
 			ChessBoardSpace originalSpace = null;
@@ -46,7 +46,7 @@ namespace ChessExample.ChessBoard.Builders
 					case "1":
 						if (group.Value is "O-O" or "O-O-O")
 						{
-							moves.AddRange(ParseCastling(board, group.Value));
+							turn = ParseCastling(board, group.Value);
 							isCastle = true;
 						}
 
@@ -112,12 +112,12 @@ namespace ChessExample.ChessBoard.Builders
 
 			ParseOriginalPosition(board, piece, newSpace, ref originalSpace);
 
-			ChessBoardMove move = new ChessBoardMove(piece, originalSpace, newSpace);
-			move.IsCapture = isCapture;
-			move.IsCheck = isCheck;
-			move.IsCheckmate = isCheckMate;
+			ChessBoardMove move = new ChessBoardMove(originalSpace, newSpace);
+			turn.IsCapture = isCapture;
+			turn.IsCheck = isCheck;
+			turn.IsCheckmate = isCheckMate;
 
-			moves.Add(move);
+			turn.Add(new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece, new List<ChessBoardMove> { move }));
 			return true;
 		}
 
@@ -177,7 +177,12 @@ namespace ChessExample.ChessBoard.Builders
 							continue;
 						}
 
-						ChessBoardMove move = new ChessBoardMove(piece, new ChessBoardSpace(x, y), newPosition);
+						ChessBoardMove move = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(x, y), NewSpace = newPosition };
+
+						ChessBoardTurn turn = new ChessBoardTurn
+						{
+							new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece, new List<ChessBoardMove>() { move })
+						};
 
 						//TODO: Add this back
 						//if (board.IsValidMove(move) && !board.IsKingCheckedValidation(move, piece.Color, board))
@@ -188,7 +193,7 @@ namespace ChessExample.ChessBoard.Builders
 						bool valid;
 						try
 						{
-							valid = board.IsValidMove(move);
+							valid = board.IsValidTurn(turn);
 						}
 						catch (ChessException e)
 						{
@@ -204,20 +209,23 @@ namespace ChessExample.ChessBoard.Builders
 			}
 		}
 
-		private static List<ChessBoardMove> ParseCastling(ChessBoard board, string value)
+		private static ChessBoardTurn ParseCastling(ChessBoard board, string value)
 		{
-			ChessBoardMove kingMove = new ChessBoardMove() { IsCastle = true };
-			ChessBoardMove rookMove = new ChessBoardMove() { IsCastle = true };
+			ChessBoardTurn turn = new ChessBoardTurn() { IsCastle = true };
+			ChessPiece.Core.ChessPiece kingPiece;
+			ChessPiece.Core.ChessPiece rookPiece;
+			ChessBoardMove kingMove;
+			ChessBoardMove rookMove;
 			if (board.CurrentMoveColor == ChessPieceColor.White)
 			{
-				kingMove.CurrentPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.King, ChessPieceColor.White);
-				rookMove.CurrentPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White);
+				kingPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.King, ChessPieceColor.White);
+				rookPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White);
 
 				string space = "e1";
 				int col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 				int row = Convert.ToInt32(space[1].ToString()) - 1;
 
-				kingMove.CurrentSpace = new ChessBoardSpace(col, row);
+				kingMove = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(col, row) };
 
 				if (value == "O-O")
 				{
@@ -225,8 +233,8 @@ namespace ChessExample.ChessBoard.Builders
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
 					kingMove.NewSpace = new ChessBoardSpace(col, row);
-					rookMove.CurrentSpace = kingMove.NewSpace;
-					rookMove.NewSpace = new ChessBoardSpace(col + 1, row);
+
+					rookMove = new ChessBoardMove { CurrentSpace = kingMove.NewSpace, NewSpace = new ChessBoardSpace(col + 1, row) };
 				}
 				else if (value == "O-O-O")
 				{
@@ -234,23 +242,28 @@ namespace ChessExample.ChessBoard.Builders
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
 					kingMove.NewSpace = new ChessBoardSpace(col, row);
-					rookMove.CurrentSpace = new ChessBoardSpace(0, 0);
-					rookMove.NewSpace = new ChessBoardSpace(col + 1, row);
+
+					rookMove = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(0, 0), NewSpace = new ChessBoardSpace(col + 1, row) };
+				}
+				else
+				{
+					throw new ChessInvalidArgumentException(board, "Invalid castling");
 				}
 
-				return new List<ChessBoardMove> { kingMove, rookMove };
+				turn.Add(new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(kingPiece, new List<ChessBoardMove>() { kingMove }));
+				turn.Add(new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(rookPiece, new List<ChessBoardMove>() { rookMove }));
+				return turn;
 			}
 
 			if (board.CurrentMoveColor == ChessPieceColor.Black)
 			{
-				kingMove.CurrentPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.King, ChessPieceColor.Black);
-				rookMove.CurrentPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.Black);
+				kingPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.King, ChessPieceColor.Black);
+				rookPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.Black);
 
 				string space = "e8";
 				int col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 				int row = Convert.ToInt32(space[1].ToString()) - 1;
-
-				kingMove.CurrentSpace = new ChessBoardSpace(col, row);
+				kingMove = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(col, row) };
 
 				if (value == "O-O")
 				{
@@ -261,9 +274,7 @@ namespace ChessExample.ChessBoard.Builders
 
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
-
-					rookMove.CurrentSpace = new ChessBoardSpace(col, row);
-					rookMove.NewSpace = new ChessBoardSpace(col - 2, row);
+					rookMove = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(col, row), NewSpace = new ChessBoardSpace(col - 2, row) };
 				}
 				else if (value == "O-O-O")
 				{
@@ -271,14 +282,19 @@ namespace ChessExample.ChessBoard.Builders
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
 					kingMove.NewSpace = new ChessBoardSpace(col, row);
-					rookMove.CurrentSpace = new ChessBoardSpace(0, 7);
-					rookMove.NewSpace = new ChessBoardSpace(col + 1, row);
+
+					rookMove = new ChessBoardMove { CurrentSpace = new ChessBoardSpace(0, 7), NewSpace = new ChessBoardSpace(col + 1, row) };
+				}
+				else
+				{
+					throw new ChessInvalidArgumentException(board, "Invalid castling");
 				}
 
-				return new List<ChessBoardMove> { kingMove, rookMove };
+				turn.Add(new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(kingPiece, new List<ChessBoardMove>() { kingMove }));
+				turn.Add(new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(rookPiece, new List<ChessBoardMove>() { rookMove }));
 			}
 
-			throw new ChessInvalidMoveException(board, "Invalid castle.", kingMove);
+			return turn;
 		}
 	}
 }

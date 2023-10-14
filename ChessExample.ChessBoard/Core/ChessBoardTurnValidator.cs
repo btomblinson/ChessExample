@@ -10,10 +10,13 @@ using ChessExample.Utilities.Extensions;
 
 namespace ChessExample.ChessBoard.Core
 {
-	public static class ChessBoardMoveValidator
+	public static class ChessBoardTurnValidator
 	{
-		public static bool PawnValidation(ChessBoardMove move, ChessBoard board)
+		public static bool PawnValidation(ChessBoard board, ChessBoardTurn turn)
 		{
+			ChessPiece.Core.ChessPiece piece = turn.GetFirstPiece();
+			ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
 			int v = move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum(); // Vertical difference
 			int h = move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum(); // Horizontal difference
 
@@ -21,7 +24,7 @@ namespace ChessExample.ChessBoard.Core
 			int stepH = Math.Abs(h);
 
 			// If moving forwards
-			if ((move.CurrentPiece.Color != ChessPieceColor.White || v <= 0) && (move.CurrentPiece.Color != ChessPieceColor.Black || v >= 0))
+			if ((piece.Color != ChessPieceColor.White || v <= 0) && (piece.Color != ChessPieceColor.Black || v >= 0))
 			{
 				return false;
 			}
@@ -47,7 +50,7 @@ namespace ChessExample.ChessBoard.Core
 				{
 					if (stepV == 1 && stepH == 1
 					               && board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 is not null
-					               && move.CurrentPiece.Color != board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()]?.Item2?.Color)
+					               && piece.Color != board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()]?.Item2?.Color)
 					{
 						return true;
 					}
@@ -59,14 +62,17 @@ namespace ChessExample.ChessBoard.Core
 			return false;
 		}
 
-		public static bool QueenValidation(ChessBoardMove move, ChessBoard board)
+		public static bool QueenValidation(ChessBoard board, ChessBoardTurn turn)
 		{
 			// For queen just using validation of bishop OR rook
-			return BishopValidation(move, board) || RookValidation(move, board);
+			return BishopValidation(board, turn) || RookValidation(board, turn);
 		}
 
-		public static bool RookValidation(ChessBoardMove move, ChessBoard board)
+		public static bool RookValidation(ChessBoard board, ChessBoardTurn turn)
 		{
+			ChessPiece.Core.ChessPiece piece = turn.GetFirstPiece();
+			ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
 			int v = move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum(); // Vertical difference
 			int h = move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum(); // Horizontal difference
 
@@ -94,9 +100,9 @@ namespace ChessExample.ChessBoard.Core
 				{
 					if (board.Board[j, i].Item2 is not null || i == move.NewSpace.Row.GetDescriptionFromEnum() && j == move.NewSpace.Column.GetDescriptionFromEnum())
 					{
-						if (move.CurrentPiece.Color == board.Board[j, i].Item2?.Color)
+						if (piece.Color == board.Board[j, i].Item2?.Color)
 						{
-							if (move.IsCastle)
+							if (turn.IsCastle)
 							{
 								continue;
 							}
@@ -115,8 +121,11 @@ namespace ChessExample.ChessBoard.Core
 			return false;
 		}
 
-		public static bool KnightValidation(ChessBoardMove move, ChessBoard board)
+		public static bool KnightValidation(ChessBoard board, ChessBoardTurn turn)
 		{
+			ChessPiece.Core.ChessPiece piece = turn.GetFirstPiece();
+			ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
 			// New position must be with stepH = 1 and steV = 2 or vice versa
 			if (Math.Abs(move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum()) == 2 && Math.Abs(move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum()) == 1
 			    || Math.Abs(move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum()) == 1 && Math.Abs(move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum()) == 2)
@@ -126,7 +135,7 @@ namespace ChessExample.ChessBoard.Core
 					return true;
 				}
 
-				return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color != move.CurrentPiece.Color;
+				return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color != piece.Color;
 			}
 			else
 			{
@@ -134,8 +143,11 @@ namespace ChessExample.ChessBoard.Core
 			}
 		}
 
-		public static bool BishopValidation(ChessBoardMove move, ChessBoard board)
+		public static bool BishopValidation(ChessBoard board, ChessBoardTurn turn)
 		{
+			ChessPiece.Core.ChessPiece piece = turn.GetFirstPiece();
+			ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
 			int v = move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum(); // Vertical difference
 			int h = move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum(); // Horizontal difference
 
@@ -156,7 +168,7 @@ namespace ChessExample.ChessBoard.Core
 				{
 					if (board.Board[j, i].Item2 is not null || i == move.NewSpace.Row.GetDescriptionFromEnum() && j == move.NewSpace.Column.GetDescriptionFromEnum())
 					{
-						if (move.CurrentPiece.Color == board.Board[j, i].Item2?.Color)
+						if (piece.Color == board.Board[j, i].Item2?.Color)
 						{
 							throw new ChessSameColorException(board, move);
 						}
@@ -174,8 +186,11 @@ namespace ChessExample.ChessBoard.Core
 			}
 		}
 
-		public static bool KingValidation(ChessBoardMove move, ChessBoard board)
+		public static bool KingValidation(ChessBoard board, ChessBoardTurn turn)
 		{
+			ChessPiece.Core.ChessPiece piece = turn.GetFirstPiece();
+			ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
 			if (Math.Abs(move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum()) < 2 && Math.Abs(move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum()) < 2)
 			{
 				if (board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 == null)
@@ -184,7 +199,7 @@ namespace ChessExample.ChessBoard.Core
 				}
 
 				// Piece has different color than king
-				return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color != move.CurrentPiece.Color;
+				return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color != piece.Color;
 			}
 
 			// Check if king is on begin pos
@@ -196,14 +211,14 @@ namespace ChessExample.ChessBoard.Core
 				if (move.NewSpace.Column.GetDescriptionFromEnum() % 7 == 0 && move.NewSpace.Row.GetDescriptionFromEnum() % 7 == 0
 				    || Math.Abs(move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum()) == 2)
 				{
-					switch (move.CurrentPiece.Color)
+					switch (piece.Color)
 					{
 						case ChessPieceColor.White:
 
 							// Queen Castle
 							if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
 							{
-								if (!HasRightToCastle(board, move.CurrentPiece))
+								if (!HasRightToCastle(board, piece))
 								{
 									return false;
 								}
@@ -217,7 +232,7 @@ namespace ChessExample.ChessBoard.Core
 							// King Castle
 							if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
 							{
-								if (!HasRightToCastle(board, move.CurrentPiece))
+								if (!HasRightToCastle(board, piece))
 								{
 									return false;
 								}
@@ -234,7 +249,7 @@ namespace ChessExample.ChessBoard.Core
 							//Queen Castle
 							if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
 							{
-								if (!HasRightToCastle(board, move.CurrentPiece))
+								if (!HasRightToCastle(board, piece))
 								{
 									return false;
 								}
@@ -248,7 +263,7 @@ namespace ChessExample.ChessBoard.Core
 							//King Castle
 							if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
 							{
-								if (!HasRightToCastle(board, move.CurrentPiece))
+								if (!HasRightToCastle(board, piece))
 								{
 									return false;
 								}

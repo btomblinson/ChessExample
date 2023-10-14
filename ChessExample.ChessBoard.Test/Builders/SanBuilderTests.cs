@@ -113,7 +113,7 @@ namespace ChessExample.ChessBoard.Test.Builders
 				"Qf7#"
 			};
 
-			ChessBoardMoveResult result = MovesHelper(movesArray);
+			ChessBoardTurnResult result = MovesHelper(movesArray);
 
 			Assert.That(result.IsCheck, Is.EqualTo(true), "Not in check state.");
 			Assert.That(result.IsCheckmate, Is.EqualTo(true), "Not in checkmate state.");
@@ -179,7 +179,7 @@ namespace ChessExample.ChessBoard.Test.Builders
 				"Qxa2#",
 			};
 
-			ChessBoardMoveResult result = MovesHelper(movesArray);
+			ChessBoardTurnResult result = MovesHelper(movesArray);
 
 			Assert.That(result.IsCheck, Is.EqualTo(true), "Not in check state.");
 			Assert.That(result.IsCheckmate, Is.EqualTo(true), "Not in checkmate state.");
@@ -187,39 +187,38 @@ namespace ChessExample.ChessBoard.Test.Builders
 
 		#endregion
 
-		private static ChessBoardMoveResult MovesHelper(string[] movesArray)
+		private static ChessBoardTurnResult MovesHelper(string[] movesArray)
 		{
 			ChessBoard board = new ChessBoard();
-			ChessBoardMoveResult result = new ChessBoardMoveResult();
+			ChessBoardTurnResult result = new ChessBoardTurnResult();
 
 			for (int i = 0; i < movesArray.Length; i++)
 			{
 				board.CurrentMoveColor = i % 2 == 0 ? ChessPieceColor.White : ChessPieceColor.Black;
 
-				Assert.That(SanBuilder.TryParse(board, movesArray[i], out List<ChessBoardMove> moves), Is.EqualTo(true), "TryParse failed.");
-				Assert.That(moves.Count, Is.GreaterThan(0), "Moves is empty.");
+				Assert.That(SanBuilder.TryParse(board, movesArray[i], out ChessBoardTurn turn), Is.EqualTo(true), "TryParse failed.");
+				Assert.That(turn.Count, Is.GreaterThan(0), "Turn is empty.");
 
-				foreach (ChessBoardMove move in moves)
+				Assert.That(board.IsValidTurn(turn), Is.EqualTo(true), "Not a valid turn.");
+
+				int currentCapturedPieceCount = 0;
+				if (turn.IsCapture)
 				{
-					Assert.That(board.IsValidMove(move), Is.EqualTo(true), "Not a valid move.");
-
-					int currentCapturedPieceCount = 0;
-					if (move.IsCapture)
-					{
-						currentCapturedPieceCount = board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count;
-					}
-
-					result = board.ExecuteMove(move);
-
-					if (move.IsCapture)
-					{
-						Assert.That(board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count, Is.EqualTo(currentCapturedPieceCount + 1), "Captured count is different.");
-					}
-
-					//make sure piece moved correctly
-					Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(null), "Piece did not move.");
-					Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(move.CurrentPiece), "Piece was not moved to correct location.");
+					currentCapturedPieceCount = board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count;
 				}
+
+				result = board.ExecuteTurn(turn);
+
+				if (turn.IsCapture)
+				{
+					Assert.That(board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count, Is.EqualTo(currentCapturedPieceCount + 1), "Captured count is different.");
+				}
+
+				ChessBoardMove move = turn.GetFirstPieceFirstMove();
+
+				//make sure piece moved correctly
+				Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(null), "Piece did not move.");
+				Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(turn.GetFirstPiece()), "Piece was not moved to correct location.");
 			}
 
 			return result;

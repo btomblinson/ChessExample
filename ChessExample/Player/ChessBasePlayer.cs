@@ -9,7 +9,7 @@ using ChessExample.ChessPiece.Enums;
 
 namespace ChessExample.Player
 {
-    public abstract class BasePlayer
+    public abstract class ChessBasePlayer
 	{
 		#region Properties
 
@@ -21,7 +21,7 @@ namespace ChessExample.Player
 
 		#region Abstract Methods
 
-		public abstract List<ChessBoardMove> DetermineMoves(ChessBoard.ChessBoard board);
+		public abstract ChessBoardTurn DetermineTurn(ChessBoard.ChessBoard board);
 
 		#endregion
 	}

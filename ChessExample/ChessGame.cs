@@ -8,13 +8,13 @@ using ChessExample.Player;
 
 namespace ChessExample
 {
-    public class ChessGame
+	public class ChessGame
 	{
 		public ChessBoard.ChessBoard Board { get; private set; }
 
-		public BasePlayer WhitePlayer { get; private set; }
+		public ChessBasePlayer WhitePlayer { get; private set; }
 
-		public BasePlayer BlackPlayer { get; private set; }
+		public ChessBasePlayer BlackPlayer { get; private set; }
 
 		public ChessGame(int players, ChessBoard.ChessBoard board)
 		{
@@ -23,16 +23,16 @@ namespace ChessExample
 			switch (players)
 			{
 				case 0:
-					WhitePlayer = new ComputerPlayer();
-					BlackPlayer = new ComputerPlayer();
+					WhitePlayer = new ChessComputerPlayer(ChessPieceColor.White);
+					BlackPlayer = new ChessComputerPlayer(ChessPieceColor.Black);
 					break;
 				case 1:
-					WhitePlayer = new HumanPlayer(ChessPieceColor.White);
-					BlackPlayer = new ComputerPlayer();
+					WhitePlayer = new ChessHumanPlayer(ChessPieceColor.White);
+					BlackPlayer = new ChessComputerPlayer(ChessPieceColor.Black);
 					break;
 				case 2:
-					WhitePlayer = new HumanPlayer(ChessPieceColor.White);
-					BlackPlayer = new HumanPlayer(ChessPieceColor.Black);
+					WhitePlayer = new ChessHumanPlayer(ChessPieceColor.White);
+					BlackPlayer = new ChessHumanPlayer(ChessPieceColor.Black);
 					break;
 			}
 		}

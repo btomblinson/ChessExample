@@ -11,7 +11,7 @@ namespace ChessExample.ChessBoard.Core.EndGame
 {
     public class InsufficientMaterialRule : EndGameRule
 	{
-		public override ChessBoardMoveResultType Type => ChessBoardMoveResultType.InsufficientMaterial;
+		public override ChessBoardTurnResultType Type => ChessBoardTurnResultType.InsufficientMaterial;
 
 		public InsufficientMaterialRule(ChessBoard board) : base(board)
 		{

@@ -19,24 +19,23 @@ if (players is < 0 or > 2)
 ChessGame game = new ChessGame(players, new ChessBoard());
 
 //start game
-ChessBoardMoveResult result = new ChessBoardMoveResult() { IsCheck = false, IsCheckmate = false, Result = ChessBoardMoveResultType.Continue };
+ChessBoardTurnResult result = new ChessBoardTurnResult() { IsCheck = false, IsCheckmate = false, Result = ChessBoardTurnResultType.Continue };
 
 int counter = 0;
-while (result.Result == ChessBoardMoveResultType.Continue)
+while (result.Result == ChessBoardTurnResultType.Continue)
 {
 	Console.WriteLine(game.Board.ToAscii());
-	List<ChessBoardMove> moves = counter % 2 == 0 ? game.WhitePlayer.DetermineMoves(game.Board) : game.BlackPlayer.DetermineMoves(game.Board);
-	foreach (ChessBoardMove move in moves)
-	{
-		if (game.Board.IsValidMove(move))
+	ChessBoardTurn turn = counter % 2 == 0 ? game.WhitePlayer.DetermineTurn(game.Board) : game.BlackPlayer.DetermineTurn(game.Board);
+	
+		if (game.Board.IsValidTurn(turn))
 		{
-			result = game.Board.ExecuteMove(move);
+			result = game.Board.ExecuteTurn(turn);
 		}
 		else
 		{
 			throw new Exception("Couldn't read player input. ");
 		}
-	}
+	
 
 	counter++;
 }

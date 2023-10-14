@@ -11,7 +11,7 @@ namespace ChessExample.ChessBoard.Core.EndGame
 	{
 		protected ChessBoard Board;
 
-		public abstract ChessBoardMoveResultType Type { get; }
+		public abstract ChessBoardTurnResultType Type { get; }
 
 		public EndGameRule(ChessBoard board)
 		{
