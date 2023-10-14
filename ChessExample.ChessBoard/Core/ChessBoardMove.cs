@@ -20,6 +20,8 @@ namespace ChessExample.ChessBoard.Core
 
 		public bool IsCheckmate { get; set; }
 
+		public bool IsCastle { get; set; }
+
 		public ChessBoardMove()
 		{
 		}

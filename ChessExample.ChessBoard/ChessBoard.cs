@@ -142,6 +142,8 @@ namespace ChessExample.ChessBoard
 
 			Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.NewSpace, move.CurrentPiece);
 
+			move.CurrentPiece.HasPieceBeenMoved = true;
+
 			//check endgame scenarios
 
 			//checkmate

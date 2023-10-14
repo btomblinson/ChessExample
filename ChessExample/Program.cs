@@ -28,7 +28,14 @@ while (result.Result == ChessBoardMoveResultType.Continue)
 	List<ChessBoardMove> moves = counter % 2 == 0 ? game.WhitePlayer.DetermineMoves(game.Board) : game.BlackPlayer.DetermineMoves(game.Board);
 	foreach (ChessBoardMove move in moves)
 	{
-		result = game.Board.ExecuteMove(move);
+		if (game.Board.IsValidMove(move))
+		{
+			result = game.Board.ExecuteMove(move);
+		}
+		else
+		{
+			throw new Exception("Couldn't read player input. ");
+		}
 	}
 
 	counter++;

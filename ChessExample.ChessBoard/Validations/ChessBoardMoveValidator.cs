@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +97,11 @@ namespace ChessExample.ChessBoard.Validations
 					{
 						if (move.CurrentPiece.Color == board.Board[j, i].Item2?.Color)
 						{
+							if (move.IsCastle)
+							{
+								continue;
+							}
+
 							throw new ChessSameColorException(board, move);
 						}
 
@@ -186,8 +192,6 @@ namespace ChessExample.ChessBoard.Validations
 			if (move.CurrentSpace.Column.GetDescriptionFromEnum() == 4 && move.CurrentSpace.Row.GetDescriptionFromEnum() % 7 == 0
 			                                                           && move.CurrentSpace.Row.GetDescriptionFromEnum() == move.NewSpace.Row.GetDescriptionFromEnum())
 			{
-				//TODO: Castling
-				/*
 				// if drop on rooks position to castle
 				// OR drop on kings new position after castle
 				if ((move.NewSpace.Column.GetDescriptionFromEnum() % 7 == 0 && move.NewSpace.Row.GetDescriptionFromEnum() % 7 == 0)
@@ -195,67 +199,65 @@ namespace ChessExample.ChessBoard.Validations
 				{
 					switch (move.CurrentPiece.Color)
 					{
-						case var e when e.Equals(ChessPieceColor.White):
+						case ChessPieceColor.White:
 
-							// Queen Castle
-							if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
-							{
-								move.Parameter = new MoveCastle(CastleType.Queen);
+							//// Queen Castle
+							//if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
+							//{
+							//	if (!HasRightToCastle(move.CurrentPiece, board))
+							//	{
+							//		return false;
+							//	}
 
-								if (!HasRightToCastle(PieceColor.White, CastleType.Queen, board))
-								{
-									return false;
-								}
+							//	if (board.Board[0, 1] is null && board.pieces[0, 2] is null && board.pieces[0, 3] is null)
+							//	{
+							//		return true;
+							//	}
+							//}
+							//// King Castle
+							//else if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
+							//{
+							//	move.Parameter = new MoveCastle(CastleType.King);
 
-								if (board.pieces[0, 1] is null && board.pieces[0, 2] is null && board.pieces[0, 3] is null)
-								{
-									return true;
-								}
-							}
-							// King Castle
-							else if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
-							{
-								move.Parameter = new MoveCastle(CastleType.King);
+							//	if (!HasRightToCastle(PieceColor.White, CastleType.King, board))
+							//	{
+							//		return false;
+							//	}
 
-								if (!HasRightToCastle(PieceColor.White, CastleType.King, board))
-								{
-									return false;
-								}
-
-								if (board.pieces[0, 5] is null && board.pieces[0, 6] is null)
-								{
-									return true;
-								}
-							}
+							//	if (board.pieces[0, 5] is null && board.pieces[0, 6] is null)
+							//	{
+							//		return true;
+							//	}
+							//}
 
 							break;
-						case var e when e.Equals(PieceColor.Black):
+						case ChessPieceColor.Black:
+
 							// Queen Castle
-							if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
-							{
-								move.Parameter = new MoveCastle(CastleType.Queen);
+							//if (move.NewSpace.Column.GetDescriptionFromEnum() == 0 || move.NewSpace.Column.GetDescriptionFromEnum() == 2)
+							//{
+							//	move.Parameter = new MoveCastle(CastleType.Queen);
 
-								if (!HasRightToCastle(PieceColor.Black, CastleType.Queen, board))
-								{
-									return false;
-								}
+							//	if (!HasRightToCastle(PieceColor.Black, CastleType.Queen, board))
+							//	{
+							//		return false;
+							//	}
 
-								if (board.pieces[7, 1] is null && board.pieces[7, 2] is null && board.pieces[7, 3] is null)
-								{
-									return true;
-								}
-							}
+							//	if (board.pieces[7, 1] is null && board.pieces[7, 2] is null && board.pieces[7, 3] is null)
+							//	{
+							//		return true;
+							//	}
+							//}
 							// King Castle
-							else if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
+							//else 
+							if (move.NewSpace.Column.GetDescriptionFromEnum() == 7 || move.NewSpace.Column.GetDescriptionFromEnum() == 6)
 							{
-								move.Parameter = new MoveCastle(CastleType.King);
-
-								if (!HasRightToCastle(PieceColor.Black, CastleType.King, board))
+								if (!HasRightToCastle(board, move.CurrentPiece))
 								{
 									return false;
 								}
 
-								if (board.pieces[7, 5] is null && board.pieces[7, 6] is null)
+								if (board.Board[7, 5].Item2 == null && board.Board[7, 6].Item2 == null)
 								{
 									return true;
 								}
@@ -264,10 +266,19 @@ namespace ChessExample.ChessBoard.Validations
 							break;
 					}
 				}
-				*/
 			}
 
 			return false;
+		}
+
+		private static bool HasRightToCastle(ChessBoard board, ChessPiece.Core.ChessPiece king)
+		{
+			ChessBoardSpace rookBoardSpace = new ChessBoardSpace(7, (short)(king.Color == ChessPieceColor.White ? 0 : 7));
+
+			return board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2 != null
+			       && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.Type == ChessPieceType.Rook
+			       && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.Color == king.Color
+			       && !king.HasPieceBeenMoved & !board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.HasPieceBeenMoved;
 		}
 	}
 }

@@ -99,6 +99,8 @@ namespace ChessExample.ChessBoard.Test.Builders
 
 				foreach (ChessBoardMove move in moves)
 				{
+					Assert.That(board.IsValidMove(move), Is.EqualTo(true), "Not a valid move.");
+
 					int currentCapturedPieceCount = 0;
 					if (move.IsCapture)
 					{
@@ -194,6 +196,8 @@ namespace ChessExample.ChessBoard.Test.Builders
 
 				foreach (ChessBoardMove move in moves)
 				{
+					Assert.That(board.IsValidMove(move), Is.EqualTo(true), "Not a valid move.");
+
 					int currentCapturedPieceCount = 0;
 					if (move.IsCapture)
 					{

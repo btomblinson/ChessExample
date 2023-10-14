@@ -206,8 +206,8 @@ namespace ChessExample.ChessBoard.Builders
 
 		private static List<ChessBoardMove> ParseCastling(ChessBoard board, string value)
 		{
-			ChessBoardMove kingMove = new ChessBoardMove();
-			ChessBoardMove rookMove = new ChessBoardMove();
+			ChessBoardMove kingMove = new ChessBoardMove() { IsCastle = true };
+			ChessBoardMove rookMove = new ChessBoardMove() { IsCastle = true };
 			if (board.CurrentMoveColor == ChessPieceColor.White)
 			{
 				kingMove.CurrentPiece = new ChessPiece.Core.ChessPiece(ChessPieceType.King, ChessPieceColor.White);

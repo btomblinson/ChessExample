@@ -24,7 +24,6 @@ namespace ChessExample.ChessBoard.Test.Core
 			ChessBoard board = new ChessBoard();
 
 			ChessBoardMove move = new ChessBoardMove(board.Board[1, 0].Item2, board.Board[1, 0].Item1, new ChessBoardSpace(2, 2));
-
 			Assert.That(ChessBoardMoveValidator.KnightValidation(move, board), Is.EqualTo(true));
 		}
 

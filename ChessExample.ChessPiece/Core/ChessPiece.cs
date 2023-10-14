@@ -9,8 +9,11 @@ namespace ChessExample.ChessPiece.Core
 
 		public ChessPieceColor Color { get; set; }
 
+		public bool HasPieceBeenMoved { get; set; }
+
 		public ChessPiece(ChessPieceType type, ChessPieceColor color)
 		{
+			HasPieceBeenMoved = false;
 			Type = type;
 			Color = color;
 		}
