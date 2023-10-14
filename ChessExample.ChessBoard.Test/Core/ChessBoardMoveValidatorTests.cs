@@ -1,13 +1,14 @@
 ﻿using ChessExample.ChessBoard.Core;
 using ChessExample.ChessBoard.Exceptions;
-using ChessExample.ChessBoard.Validations;
 using NUnit.Framework;
 
 namespace ChessExample.ChessBoard.Test.Core
 {
-	[TestFixture]
+    [TestFixture]
 	public class ChessBoardMoveValidatorTests
 	{
+		#region WhitePiece
+
 		[Test]
 		public void WhiteRookFailTestStartOfGame()
 		{
@@ -70,5 +71,45 @@ namespace ChessExample.ChessBoard.Test.Core
 
 			Assert.That(ChessBoardMoveValidator.PawnValidation(move, board), Is.EqualTo(expected));
 		}
+
+		#endregion
+
+		#region BlackPiece
+
+		[TestCase(0, 6, true)]
+		[TestCase(1, 6, true)]
+		[TestCase(2, 6, true)]
+		[TestCase(3, 6, true)]
+		[TestCase(4, 6, true)]
+		[TestCase(5, 6, true)]
+		[TestCase(6, 6, true)]
+		[TestCase(7, 6, true)]
+		public void BlackPawnMoveTwoStartOfGame(int col, int row, bool expected)
+		{
+			ChessBoard board = new ChessBoard();
+
+			ChessBoardMove move = new ChessBoardMove(board.Board[col, row].Item2, board.Board[col, row].Item1, new ChessBoardSpace(col, row - 2));
+
+			Assert.That(ChessBoardMoveValidator.PawnValidation(move, board), Is.EqualTo(expected));
+		}
+
+		[TestCase(0, 6, true)]
+		[TestCase(1, 6, true)]
+		[TestCase(2, 6, true)]
+		[TestCase(3, 6, true)]
+		[TestCase(4, 6, true)]
+		[TestCase(5, 6, true)]
+		[TestCase(6, 6, true)]
+		[TestCase(7, 6, true)]
+		public void BlackPawnMoveOneStartOfGame(int col, int row, bool expected)
+		{
+			ChessBoard board = new ChessBoard();
+
+			ChessBoardMove move = new ChessBoardMove(board.Board[col, row].Item2, board.Board[col, row].Item1, new ChessBoardSpace(col, row - 1));
+
+			Assert.That(ChessBoardMoveValidator.PawnValidation(move, board), Is.EqualTo(expected));
+		}
+
+		#endregion
 	}
 }

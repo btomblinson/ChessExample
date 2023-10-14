@@ -9,7 +9,7 @@ using ChessExample.ChessPiece.Enums;
 
 namespace ChessExample.Player
 {
-	public abstract class BasePlayer
+    public abstract class BasePlayer
 	{
 		#region Properties
 

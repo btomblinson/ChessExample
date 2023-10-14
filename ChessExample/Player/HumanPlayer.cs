@@ -11,7 +11,7 @@ using ChessExample.ChessPiece.Enums;
 
 namespace ChessExample.Player
 {
-	public class HumanPlayer : BasePlayer
+    public class HumanPlayer : BasePlayer
 	{
 		public ChessPieceColor Color { get; set; }
 

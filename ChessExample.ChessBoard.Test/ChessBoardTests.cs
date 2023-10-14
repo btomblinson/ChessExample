@@ -7,13 +7,13 @@ using ChessExample.ChessBoard.Core;
 using ChessExample.ChessPiece.Enums;
 using NUnit.Framework;
 
-namespace ChessExample.ChessBoard.Test.Core
+namespace ChessExample.ChessBoard.Test
 {
 	[TestFixture]
 	public class ChessBoardTests
 	{
-		[OneTimeSetUp]
-		public void ChessBoardInitializeTest()
+		[Test]
+		public void BoardInitializeTest()
 		{
 			ChessBoard board = new ChessBoard();
 
@@ -92,57 +92,6 @@ namespace ChessExample.ChessBoard.Test.Core
 			Assert.That(board.Board[5, 7].Item2, Is.EqualTo(new ChessPiece.Core.ChessPiece(ChessPieceType.Bishop, ChessPieceColor.Black)));
 			Assert.That(board.Board[6, 7].Item2, Is.EqualTo(new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.Black)));
 			Assert.That(board.Board[7, 7].Item2, Is.EqualTo(new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.Black)));
-		}
-
-		[Test]
-		public void ChessBoardStartGameWhitePawnCaptureBlackPawnTest()
-		{
-			ChessBoard board = new ChessBoard();
-
-			//move first white piece
-			ChessBoardMove whiteMove = new ChessBoardMove(board.Board[1, 1].Item2, board.Board[1, 1].Item1, new ChessBoardSpace(1, 3));
-			Assert.That(board.IsValidMove(whiteMove), Is.EqualTo(true));
-			board.ExecuteMove(whiteMove);
-
-			//move first black piece
-			ChessBoardMove blackMove = new ChessBoardMove(board.Board[0, 6].Item2, board.Board[0, 6].Item1, new ChessBoardSpace(0, 4));
-			Assert.That(board.IsValidMove(blackMove), Is.EqualTo(true));
-			board.ExecuteMove(blackMove);
-
-			//take black pawn with white pawn
-			ChessBoardMove whiteCaptureMove = new ChessBoardMove(board.Board[1, 3].Item2, board.Board[1, 3].Item1, new ChessBoardSpace(0, 4));
-			Assert.That(board.IsValidMove(whiteCaptureMove), Is.EqualTo(true));
-			board.ExecuteMove(whiteCaptureMove);
-
-			Assert.That(board.BlackCaptured.Count, Is.EqualTo(1));
-		}
-
-		[Test]
-		public void ChessBoardStartGameBlackPawnCaptureWhitePawnTest()
-		{
-			ChessBoard board = new ChessBoard();
-
-			//move first white piece
-			ChessBoardMove whiteMove = new ChessBoardMove(board.Board[0, 1].Item2, board.Board[0, 1].Item1, new ChessBoardSpace(0, 3));
-			Assert.That(board.IsValidMove(whiteMove), Is.EqualTo(true));
-			board.ExecuteMove(whiteMove);
-
-			//move first black piece
-			ChessBoardMove blackMove = new ChessBoardMove(board.Board[1, 6].Item2, board.Board[1, 6].Item1, new ChessBoardSpace(1, 4));
-			Assert.That(board.IsValidMove(blackMove), Is.EqualTo(true));
-			board.ExecuteMove(blackMove);
-
-			//move second white piece
-			whiteMove = new ChessBoardMove(board.Board[2, 1].Item2, board.Board[2, 1].Item1, new ChessBoardSpace(2, 3));
-			Assert.That(board.IsValidMove(whiteMove), Is.EqualTo(true));
-			board.ExecuteMove(whiteMove);
-
-			//take white pawn with black pawn
-			ChessBoardMove blackCaptureMove = new ChessBoardMove(board.Board[1, 4].Item2, board.Board[1, 4].Item1, new ChessBoardSpace(2, 3));
-			Assert.That(board.IsValidMove(blackCaptureMove), Is.EqualTo(true));
-			board.ExecuteMove(blackCaptureMove);
-
-			Assert.That(board.WhiteCaptured.Count, Is.EqualTo(1));
 		}
 	}
 }

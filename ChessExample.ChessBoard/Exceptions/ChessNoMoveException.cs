@@ -7,7 +7,7 @@ using ChessExample.ChessBoard.Core;
 
 namespace ChessExample.ChessBoard.Exceptions
 {
-	public class ChessNoMoveException : ChessException
+    public class ChessNoMoveException : ChessException
 	{
 		public ChessBoardMove Move { get; }
 

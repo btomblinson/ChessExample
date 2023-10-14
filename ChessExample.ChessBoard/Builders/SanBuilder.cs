@@ -230,10 +230,12 @@ namespace ChessExample.ChessBoard.Builders
 				}
 				else if (value == "O-O-O")
 				{
-					space = "a1";
+					space = "c1";
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
 					kingMove.NewSpace = new ChessBoardSpace(col, row);
+					rookMove.CurrentSpace = new ChessBoardSpace(0, 0);
+					rookMove.NewSpace = new ChessBoardSpace(col + 1, row);
 				}
 
 				return new List<ChessBoardMove> { kingMove, rookMove };
@@ -265,10 +267,12 @@ namespace ChessExample.ChessBoard.Builders
 				}
 				else if (value == "O-O-O")
 				{
-					space = "a8";
+					space = "c8";
 					col = space[0].GetDescriptionFromValue<ChessBoardColumn>();
 					row = Convert.ToInt32(space[1].ToString()) - 1;
 					kingMove.NewSpace = new ChessBoardSpace(col, row);
+					rookMove.CurrentSpace = new ChessBoardSpace(0, 7);
+					rookMove.NewSpace = new ChessBoardSpace(col + 1, row);
 				}
 
 				return new List<ChessBoardMove> { kingMove, rookMove };

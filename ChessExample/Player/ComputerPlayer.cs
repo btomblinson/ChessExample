@@ -8,7 +8,7 @@ using ChessExample.ChessBoard.Core;
 
 namespace ChessExample.Player
 {
-	public class ComputerPlayer : BasePlayer
+    public class ComputerPlayer : BasePlayer
 	{
 		public ComputerPlayer()
 		{

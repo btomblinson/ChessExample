@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChessExample.ChessBoard.Core.EndGame
 {
-	public abstract class EndGameRule
+    public abstract class EndGameRule
 	{
 		protected ChessBoard Board;
 

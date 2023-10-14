@@ -9,7 +9,7 @@ using ChessExample.Utilities.Extensions;
 
 namespace ChessExample.ChessBoard.Core.EndGame
 {
-	public class InsufficientMaterialRule : EndGameRule
+    public class InsufficientMaterialRule : EndGameRule
 	{
 		public override ChessBoardMoveResultType Type => ChessBoardMoveResultType.InsufficientMaterial;
 

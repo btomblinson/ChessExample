@@ -7,7 +7,7 @@ using ChessExample.ChessBoard.Core;
 
 namespace ChessExample.ChessBoard.Exceptions
 {
-	public class ChessSameColorException : ChessException
+    public class ChessSameColorException : ChessException
 	{
 		public ChessBoardMove Move { get; }
 

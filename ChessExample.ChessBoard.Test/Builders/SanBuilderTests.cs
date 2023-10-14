@@ -15,25 +15,51 @@ namespace ChessExample.ChessBoard.Test.Builders
 	[TestFixture]
 	public class SanBuilderTests
 	{
-		[TestCase("e4", ChessPieceColor.White, true)]
-		[TestCase("e5", ChessPieceColor.Black, true)]
-		[TestCase("Nf3", ChessPieceColor.White, true)]
-		[TestCase("f6", ChessPieceColor.Black, true)]
-		public void SanTestValidMovesNewGame(string san, ChessPieceColor pieceColor, bool expected)
-		{
-			ChessBoard board = new ChessBoard();
-			board.CurrentMoveColor = pieceColor;
+		#region Queenside Castle Tests
 
-			Assert.That(SanBuilder.TryParse(board, san, out List<ChessBoardMove> moves), Is.EqualTo(expected), "TryParse failed.");
-			Assert.That(moves.Count, Is.GreaterThan(0), "Moves is empty.");
+		[Test]
+		public void SanTestBlackQueenSideCastleTest()
+		{
+			var movesArray = new[]
+			{
+				"Nf3", "Nc6",
+				"d4", "d5",
+				"Bf4", "Bg4",
+				"Ne5", "Nxe5",
+				"dxe5", "Qd7",
+				"Nc3", "O-O-O"
+			};
+
+			MovesHelper(movesArray);
 		}
+
+		[Test]
+		public void SanTestWhiteQueenSideCastleTest()
+		{
+			var movesArray = new[]
+			{
+				"c4", "c5",
+				"d4", "cxd4",
+				"Qxd4", "Nf6",
+				"Bf4", "Nh5",
+				"Nd2", "Nxf4",
+				"Qxf4", "Nc6",
+				"O-O-O"
+			};
+
+			MovesHelper(movesArray);
+		}
+
+		#endregion
+
+		#region Checkmate Tests
 
 		/// <summary>
 		/// This is taken from a recent Magnus Carlsen game
 		/// https://www.chess.com/games/view/16372061
 		/// </summary>
 		[Test]
-		public void SanTestValidGameWhiteCheckmate()
+		public void SanTestWhiteCheckmate()
 		{
 			var movesArray = new[]
 			{
@@ -87,38 +113,7 @@ namespace ChessExample.ChessBoard.Test.Builders
 				"Qf7#"
 			};
 
-			ChessBoard board = new ChessBoard();
-			ChessBoardMoveResult result = new ChessBoardMoveResult();
-
-			for (int i = 0; i < movesArray.Length; i++)
-			{
-				board.CurrentMoveColor = i % 2 == 0 ? ChessPieceColor.White : ChessPieceColor.Black;
-
-				Assert.That(SanBuilder.TryParse(board, movesArray[i], out List<ChessBoardMove> moves), Is.EqualTo(true), "TryParse failed.");
-				Assert.That(moves.Count, Is.GreaterThan(0), "Moves is empty.");
-
-				foreach (ChessBoardMove move in moves)
-				{
-					Assert.That(board.IsValidMove(move), Is.EqualTo(true), "Not a valid move.");
-
-					int currentCapturedPieceCount = 0;
-					if (move.IsCapture)
-					{
-						currentCapturedPieceCount = board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count;
-					}
-
-					result = board.ExecuteMove(move);
-
-					if (move.IsCapture)
-					{
-						Assert.That(board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count, Is.EqualTo(currentCapturedPieceCount + 1), "Captured count is different.");
-					}
-
-					//make sure piece moved correctly
-					Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(null), "Piece did not move.");
-					Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(move.CurrentPiece), "Piece was not moved to correct location.");
-				}
-			}
+			ChessBoardMoveResult result = MovesHelper(movesArray);
 
 			Assert.That(result.IsCheck, Is.EqualTo(true), "Not in check state.");
 			Assert.That(result.IsCheckmate, Is.EqualTo(true), "Not in checkmate state.");
@@ -129,7 +124,7 @@ namespace ChessExample.ChessBoard.Test.Builders
 		/// https://www.chess.com/game/live/89585430569
 		/// </summary>
 		[Test]
-		public void SanTestValidGameBlackCheckmate()
+		public void SanTestBlackCheckmate()
 		{
 			var movesArray = new[]
 			{
@@ -184,6 +179,16 @@ namespace ChessExample.ChessBoard.Test.Builders
 				"Qxa2#",
 			};
 
+			ChessBoardMoveResult result = MovesHelper(movesArray);
+
+			Assert.That(result.IsCheck, Is.EqualTo(true), "Not in check state.");
+			Assert.That(result.IsCheckmate, Is.EqualTo(true), "Not in checkmate state.");
+		}
+
+		#endregion
+
+		private static ChessBoardMoveResult MovesHelper(string[] movesArray)
+		{
 			ChessBoard board = new ChessBoard();
 			ChessBoardMoveResult result = new ChessBoardMoveResult();
 
@@ -217,8 +222,7 @@ namespace ChessExample.ChessBoard.Test.Builders
 				}
 			}
 
-			Assert.That(result.IsCheck, Is.EqualTo(true), "Not in check state.");
-			Assert.That(result.IsCheckmate, Is.EqualTo(true), "Not in checkmate state.");
+			return result;
 		}
 	}
 }

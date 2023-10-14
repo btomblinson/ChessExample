@@ -8,7 +8,7 @@ using ChessExample.Player;
 
 namespace ChessExample
 {
-	public class ChessGame
+    public class ChessGame
 	{
 		public ChessBoard.ChessBoard Board { get; private set; }
 
