@@ -12,215 +12,219 @@ using ChessExample.Utilities.Extensions;
 
 namespace ChessExample.ChessBoard
 {
-	public class ChessBoard
-	{
-		public readonly int NumColumns = 8;
+    public class ChessBoard
+    {
+        public readonly int NumColumns = 8;
 
-		public readonly int NumRows = 8;
+        public readonly int NumRows = 8;
 
-		public Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[,] Board;
+        public Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[,] Board;
 
-		public List<ChessPiece.Core.ChessPiece> WhiteCaptured;
+        public List<ChessPiece.Core.ChessPiece> WhiteCaptured;
 
-		public List<ChessPiece.Core.ChessPiece> BlackCaptured;
+        public List<ChessPiece.Core.ChessPiece> BlackCaptured;
 
-		public ChessPieceColor CurrentMoveColor { get; set; }
+        public List<string> SanNotationMoves;
 
-		public ChessBoard()
-		{
-			WhiteCaptured = new List<ChessPiece.Core.ChessPiece>();
-			BlackCaptured = new List<ChessPiece.Core.ChessPiece>();
+        public ChessPieceColor CurrentMoveColor { get; set; }
 
-			Board = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[8, 8];
+        public ChessBoard()
+        {
+            WhiteCaptured = new List<ChessPiece.Core.ChessPiece>();
+            BlackCaptured = new List<ChessPiece.Core.ChessPiece>();
+            SanNotationMoves = new List<string>();
 
-			InitializeBoard();
-		}
+            Board = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[8, 8];
 
-		private void InitializeBoard()
-		{
-			for (int x = 0; x < NumColumns; x++)
-			{
-				for (int y = 0; y < NumRows; y++)
-				{
-					if (y is 0 or 1 or 6 or 7)
-					{
-						ChessPieceType type = ChessPieceType.Pawn;
+            InitializeBoard();
+        }
 
-						ChessPieceColor color = ChessPieceColor.White;
+        private void InitializeBoard()
+        {
+            for (int x = 0; x < NumColumns; x++)
+            {
+                for (int y = 0; y < NumRows; y++)
+                {
+                    if (y is 0 or 1 or 6 or 7)
+                    {
+                        ChessPieceType type = ChessPieceType.Pawn;
 
-						//add white pieces
-						if (y is 0 or 1)
-						{
-							color = ChessPieceColor.White;
+                        ChessPieceColor color = ChessPieceColor.White;
 
-							//if back row do special pieces, otherwise it lets it stay pawns for row 2
-							if (y is 0)
-							{
-								type = x switch
-								{
-									0 or 7 => ChessPieceType.Rook,
-									1 or 6 => ChessPieceType.Knight,
-									2 or 5 => ChessPieceType.Bishop,
-									3 => ChessPieceType.Queen,
-									4 => ChessPieceType.King,
-									_ => type
-								};
-							}
-						}
+                        //add white pieces
+                        if (y is 0 or 1)
+                        {
+                            color = ChessPieceColor.White;
 
-						//add black pieces
-						if (y is 6 or 7)
-						{
-							color = ChessPieceColor.Black;
+                            //if back row do special pieces, otherwise it lets it stay pawns for row 2
+                            if (y is 0)
+                            {
+                                type = x switch
+                                {
+                                    0 or 7 => ChessPieceType.Rook,
+                                    1 or 6 => ChessPieceType.Knight,
+                                    2 or 5 => ChessPieceType.Bishop,
+                                    3 => ChessPieceType.Queen,
+                                    4 => ChessPieceType.King,
+                                    _ => type
+                                };
+                            }
+                        }
 
-							//if back row do special pieces, otherwise it lets it stay pawns for row 2
-							if (y is 7)
-							{
-								type = x switch
-								{
-									0 or 7 => ChessPieceType.Rook,
-									1 or 6 => ChessPieceType.Knight,
-									2 or 5 => ChessPieceType.Bishop,
-									3 => ChessPieceType.Queen,
-									4 => ChessPieceType.King,
-									_ => type
-								};
-							}
-						}
+                        //add black pieces
+                        if (y is 6 or 7)
+                        {
+                            color = ChessPieceColor.Black;
 
-						Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), new ChessPiece.Core.ChessPiece(type, color));
-					}
-					else
-					{
-						Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), null);
-					}
-				}
-			}
-		}
+                            //if back row do special pieces, otherwise it lets it stay pawns for row 2
+                            if (y is 7)
+                            {
+                                type = x switch
+                                {
+                                    0 or 7 => ChessPieceType.Rook,
+                                    1 or 6 => ChessPieceType.Knight,
+                                    2 or 5 => ChessPieceType.Bishop,
+                                    3 => ChessPieceType.Queen,
+                                    4 => ChessPieceType.King,
+                                    _ => type
+                                };
+                            }
+                        }
 
-		public bool IsValidTurn(ChessBoardTurn turn)
-		{
-			switch (turn.GetFirstPiece().Type)
-			{
-				case ChessPieceType.Rook:
-					return ChessBoardTurnValidator.RookValidation(this, turn);
-				case ChessPieceType.Knight:
-					return ChessBoardTurnValidator.KnightValidation(this, turn);
-				case ChessPieceType.Bishop:
-					return ChessBoardTurnValidator.BishopValidation(this, turn);
-				case ChessPieceType.King:
-					return ChessBoardTurnValidator.KingValidation(this, turn);
-				case ChessPieceType.Queen:
-					return ChessBoardTurnValidator.QueenValidation(this, turn);
-				case ChessPieceType.Pawn:
-					return ChessBoardTurnValidator.PawnValidation(this, turn);
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
+                        Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), new ChessPiece.Core.ChessPiece(type, color));
+                    }
+                    else
+                    {
+                        Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), null);
+                    }
+                }
+            }
+        }
 
-		public ChessBoardTurnResult ExecuteTurn(ChessBoardTurn turn)
-		{
-			ChessBoardTurnResult result = new ChessBoardTurnResult();
+        public bool IsValidTurn(ChessBoardTurn turn)
+        {
+            switch (turn.GetFirstPiece().Type)
+            {
+                case ChessPieceType.Rook:
+                    return ChessBoardTurnValidator.RookValidation(this, turn);
+                case ChessPieceType.Knight:
+                    return ChessBoardTurnValidator.KnightValidation(this, turn);
+                case ChessPieceType.Bishop:
+                    return ChessBoardTurnValidator.BishopValidation(this, turn);
+                case ChessPieceType.King:
+                    return ChessBoardTurnValidator.KingValidation(this, turn);
+                case ChessPieceType.Queen:
+                    return ChessBoardTurnValidator.QueenValidation(this, turn);
+                case ChessPieceType.Pawn:
+                    return ChessBoardTurnValidator.PawnValidation(this, turn);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
-			//turn has been validated, update the board
+        public ChessBoardTurnResult ExecuteTurn(ChessBoardTurn turn)
+        {
+            ChessBoardTurnResult result = new ChessBoardTurnResult();
 
-			foreach (Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>> piece in turn)
-			{
-				foreach (ChessBoardMove move in piece.Item2)
-				{
-					//remove piece from original place
-					Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.CurrentSpace, null);
+            //turn has been validated, update the board
 
-					//move piece to new place
+            foreach (Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>> piece in turn)
+            {
+                foreach (ChessBoardMove move in piece.Item2)
+                {
+                    //remove piece from original place
+                    Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.CurrentSpace, null);
 
-					//if piece is already there kill it
-					if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 != null)
-					{
-						if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color == ChessPieceColor.Black)
-						{
-							BlackCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
-						}
-						else
-						{
-							WhiteCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
-						}
-					}
+                    //move piece to new place
 
-					Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.NewSpace, piece.Item1);
+                    //if piece is already there kill it
+                    if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 != null)
+                    {
+                        if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color == ChessPieceColor.Black)
+                        {
+                            BlackCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
+                        }
+                        else
+                        {
+                            WhiteCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
+                        }
+                    }
 
-					piece.Item1.HasPieceBeenMoved = true;
-				}
-			}
+                    Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.NewSpace, piece.Item1);
 
-			//check endgame scenarios
+                    piece.Item1.HasPieceBeenMoved = true;
+                }
+            }
 
-			//checkmate
-			if (turn.IsCheckmate)
-			{
-				result.IsCheck = true;
-				result.IsCheckmate = true;
-				result.Result = ChessBoardTurnResultType.Checkmate;
-				return result;
-			}
+            //check endgame scenarios
 
-			//draw endgame scenarios
+            //checkmate
+            if (turn.IsCheckmate)
+            {
+                result.IsCheck = true;
+                result.IsCheckmate = true;
+                result.Result = ChessBoardTurnResultType.Checkmate;
+                return result;
+            }
 
-			//check InsufficientMaterialRule
-			InsufficientMaterialRule rule = new InsufficientMaterialRule(this);
-			if (rule.IsEndGame())
-			{
-				result.Result = ChessBoardTurnResultType.InsufficientMaterial;
-				return result;
-			}
+            //draw endgame scenarios
 
-			result.Result = ChessBoardTurnResultType.Continue;
+            //check InsufficientMaterialRule
+            InsufficientMaterialRule rule = new InsufficientMaterialRule(this);
+            if (rule.IsEndGame())
+            {
+                result.Result = ChessBoardTurnResultType.InsufficientMaterial;
+                return result;
+            }
 
-			return result;
-		}
+            SanNotationMoves.Add(turn.GenerateSanNotation());
+            result.Result = ChessBoardTurnResultType.Continue;
 
-		/// <summary>
-		/// Generates ASCII string representing current board
-		/// </summary>
-		public string ToAscii(bool displayFull = false)
-		{
-			StringBuilder builder = new("   ┌────────────────────────────────┐\n");
-			for (int y = 8 - 1; y >= 0; y--)
-			{
-				builder.Append(" " + (y + 1) + " │");
-				for (int x = 0; x < 8; x++)
-				{
-					builder.Append(' ');
+            return result;
+        }
 
-					if (Board[x, y].Item2 is not null)
-					{
-						builder.Append(Board[x, y].Item2?.ToFen());
-					}
-					else
-					{
-						builder.Append(". ");
-					}
+        /// <summary>
+        /// Generates ASCII string representing current board
+        /// </summary>
+        public string ToAscii(bool displayFull = false)
+        {
+            StringBuilder builder = new("   ┌────────────────────────────────┐\n");
+            for (int y = 8 - 1; y >= 0; y--)
+            {
+                builder.Append(" " + (y + 1) + " │");
+                for (int x = 0; x < 8; x++)
+                {
+                    builder.Append(' ');
 
-					builder.Append(' ');
-				}
+                    if (Board[x, y].Item2 is not null)
+                    {
+                        builder.Append(Board[x, y].Item2?.ToFen());
+                    }
+                    else
+                    {
+                        builder.Append(". ");
+                    }
 
-				builder.Append("│\n");
-			}
+                    builder.Append(' ');
+                }
 
-			builder.Append("   └────────────────────────────────┘\n");
-			builder.Append("     a   b   c   d   e   f   g   h  \n");
+                builder.Append("│\n");
+            }
 
-			if (displayFull)
-			{
-				builder.Append('\n');
+            builder.Append("   └────────────────────────────────┘\n");
+            builder.Append("     a   b   c   d   e   f   g   h  \n");
 
-				if (WhiteCaptured.Count > 0)
-					builder.Append("  White Captured: " + string.Join(", ", WhiteCaptured.Select(p => p.ToFen())) + '\n');
-				if (BlackCaptured.Count > 0)
-					builder.Append("  Black Captured: " + string.Join(", ", BlackCaptured.Select(p => p.ToFen())) + '\n');
-			}
+            if (displayFull)
+            {
+                builder.Append('\n');
 
-			return builder.ToString();
-		}
-	}
+                if (WhiteCaptured.Count > 0)
+                    builder.Append("  White Captured: " + string.Join(", ", WhiteCaptured.Select(p => p.ToFen())) + '\n');
+                if (BlackCaptured.Count > 0)
+                    builder.Append("  Black Captured: " + string.Join(", ", BlackCaptured.Select(p => p.ToFen())) + '\n');
+            }
+
+            return builder.ToString();
+        }
+    }
 }

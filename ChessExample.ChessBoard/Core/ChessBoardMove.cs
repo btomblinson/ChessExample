@@ -6,20 +6,22 @@ using System.Threading.Tasks;
 
 namespace ChessExample.ChessBoard.Core
 {
-	public class ChessBoardMove
-	{
-		public ChessBoardSpace? CurrentSpace;
+    public class ChessBoardMove
+    {
+        public ChessBoardSpace? CurrentSpace;
 
-		public ChessBoardSpace? NewSpace;
+        public ChessBoardSpace? NewSpace;
 
-		public ChessBoardMove()
-		{
-		}
+        public bool IsCapture { get; set; }
 
-		public ChessBoardMove(ChessBoardSpace currentSpace, ChessBoardSpace newSpace)
-		{
-			CurrentSpace = currentSpace;
-			NewSpace = newSpace;
-		}
-	}
+        public ChessBoardMove()
+        {
+        }
+
+        public ChessBoardMove(ChessBoardSpace currentSpace, ChessBoardSpace newSpace)
+        {
+            CurrentSpace = currentSpace;
+            NewSpace = newSpace;
+        }
+    }
 }

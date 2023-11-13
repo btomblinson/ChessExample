@@ -27,11 +27,11 @@ namespace ChessExample.ChessBoard.Test.Core
 			ChessBoard board = new();
 			Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece = new(new ChessBoardSpace(0, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
 
-			Assert.Throws<ChessSameColorException>(() => ChessBoardTurnGenerator.RookGenerator(board, piece));
+            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, piece).Count, Is.EqualTo(0), "Invalid generated moves.");
 
-			piece = new(new ChessBoardSpace(7, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
+            piece = new(new ChessBoardSpace(7, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
 
-            Assert.Throws<ChessSameColorException>(() => ChessBoardTurnGenerator.RookGenerator(board, piece));
+            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, piece).Count, Is.EqualTo(0), "Invalid generated moves.");
         }
 	}
 }

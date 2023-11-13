@@ -2,18 +2,19 @@
 using ChessExample.ChessBoard;
 using ChessExample.ChessBoard.Core;
 using ChessExample.ChessBoard.Enums;
+using ChessExample.ChessPiece.Core;
 
 Console.WriteLine("How many players? ");
 string numPlayers = Console.ReadLine() ?? "0";
 
 if (!int.TryParse(numPlayers, out int players))
 {
-	throw new Exception("Invalid players");
+    throw new Exception("Invalid players");
 }
 
 if (players is < 0 or > 2)
 {
-	throw new Exception("Invalid players");
+    throw new Exception("Invalid players");
 }
 
 ChessGame game = new ChessGame(players, new ChessBoard());
@@ -24,17 +25,17 @@ ChessBoardTurnResult result = new ChessBoardTurnResult() { IsCheck = false, IsCh
 int counter = 0;
 while (result.Result == ChessBoardTurnResultType.Continue)
 {
-	Console.WriteLine(game.Board.ToAscii());
-	ChessBoardTurn turn = counter % 2 == 0 ? game.WhitePlayer.DetermineTurn(game.Board) : game.BlackPlayer.DetermineTurn(game.Board);
+    Console.WriteLine(game.Board.ToAscii());
+    ChessBoardTurn turn = counter % 2 == 0 ? game.WhitePlayer.DetermineTurn(game.Board) : game.BlackPlayer.DetermineTurn(game.Board);
 
-	if (game.Board.IsValidTurn(turn))
-	{
-		result = game.Board.ExecuteTurn(turn);
-	}
-	else
-	{
-		throw new Exception("Couldn't read player input. ");
-	}
+    if (game.Board.IsValidTurn(turn))
+    {
+        result = game.Board.ExecuteTurn(turn);
+    }
+    else
+    {
+        throw new Exception("Couldn't read player input. ");
+    }
 
-	counter++;
+    counter++;
 }

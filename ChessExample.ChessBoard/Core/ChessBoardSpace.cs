@@ -82,5 +82,10 @@ namespace ChessExample.ChessBoard.Core
 				Color = GetColor();
 			}
 		}
-	}
+
+        public override string ToString()
+        {
+			return $"{Column.GetValueFromEnum().ToLower()}{Row.GetDescriptionFromEnum() + 1}";
+        }
+    }
 }

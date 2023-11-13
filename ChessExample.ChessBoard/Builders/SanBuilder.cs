@@ -113,7 +113,7 @@ namespace ChessExample.ChessBoard.Builders
 			ParseOriginalPosition(board, piece, newSpace, ref originalSpace);
 
 			ChessBoardMove move = new ChessBoardMove(originalSpace, newSpace);
-			turn.IsCapture = isCapture;
+            move.IsCapture = isCapture;
 			turn.IsCheck = isCheck;
 			turn.IsCheckmate = isCheckMate;
 
