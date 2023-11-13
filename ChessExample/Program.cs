@@ -26,16 +26,15 @@ while (result.Result == ChessBoardTurnResultType.Continue)
 {
 	Console.WriteLine(game.Board.ToAscii());
 	ChessBoardTurn turn = counter % 2 == 0 ? game.WhitePlayer.DetermineTurn(game.Board) : game.BlackPlayer.DetermineTurn(game.Board);
-	
-		if (game.Board.IsValidTurn(turn))
-		{
-			result = game.Board.ExecuteTurn(turn);
-		}
-		else
-		{
-			throw new Exception("Couldn't read player input. ");
-		}
-	
+
+	if (game.Board.IsValidTurn(turn))
+	{
+		result = game.Board.ExecuteTurn(turn);
+	}
+	else
+	{
+		throw new Exception("Couldn't read player input. ");
+	}
 
 	counter++;
 }

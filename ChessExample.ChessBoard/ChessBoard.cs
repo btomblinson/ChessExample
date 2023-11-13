@@ -14,6 +14,10 @@ namespace ChessExample.ChessBoard
 {
 	public class ChessBoard
 	{
+		public readonly int NumColumns = 8;
+
+		public readonly int NumRows = 8;
+
 		public Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[,] Board;
 
 		public List<ChessPiece.Core.ChessPiece> WhiteCaptured;
@@ -34,9 +38,9 @@ namespace ChessExample.ChessBoard
 
 		private void InitializeBoard()
 		{
-			for (int y = 0; y < 8; y++)
+			for (int x = 0; x < NumColumns; x++)
 			{
-				for (int x = 0; x < 8; x++)
+				for (int y = 0; y < NumRows; y++)
 				{
 					if (y is 0 or 1 or 6 or 7)
 					{

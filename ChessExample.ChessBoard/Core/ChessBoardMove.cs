@@ -8,13 +8,12 @@ namespace ChessExample.ChessBoard.Core
 {
 	public class ChessBoardMove
 	{
-		public ChessBoardSpace CurrentSpace;
+		public ChessBoardSpace? CurrentSpace;
 
-		public ChessBoardSpace NewSpace;
+		public ChessBoardSpace? NewSpace;
 
 		public ChessBoardMove()
 		{
-
 		}
 
 		public ChessBoardMove(ChessBoardSpace currentSpace, ChessBoardSpace newSpace)

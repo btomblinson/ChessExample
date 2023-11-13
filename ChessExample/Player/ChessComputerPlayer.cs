@@ -19,7 +19,7 @@ namespace ChessExample.Player
 
 		public override ChessBoardTurn DetermineTurn(ChessBoard.ChessBoard board)
 		{
-			List<Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>> validMoves = new List<Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>>();
+			ChessBoardTurn turn = new ChessBoardTurn();
 
 			//loop through board and determine all valid moves
 			for (int y = 0; y < 8; y++)
@@ -32,14 +32,33 @@ namespace ChessExample.Player
 						continue;
 					}
 
-					if (board.Board[x, y].Item2.Color != Color)
+					if (board.Board[x, y].Item2?.Color != Color)
 					{
 						continue;
+					}
+
+					switch (board.Board[x, y].Item2?.Type)
+					{
+						case ChessPieceType.Rook:
+							break;
+						case ChessPieceType.Knight:
+							turn.AddRange(ChessBoardTurnGenerator.KnightGenerator(board, board.Board[x, y]));
+							break;
+						case ChessPieceType.Bishop:
+							break;
+						case ChessPieceType.King:
+							break;
+						case ChessPieceType.Queen:
+							break;
+						case ChessPieceType.Pawn:
+							break;
+						default:
+							throw new ArgumentOutOfRangeException();
 					}
 				}
 			}
 
-			return null;
+			return turn;
 		}
 	}
 }
