@@ -12,13 +12,13 @@ namespace ChessExample.ChessBoard.Core
 {
     public static class ChessBoardTurnGenerator
     {
-        public static ChessBoardTurn PawnGenerator(ChessBoard board, ChessBoardSpace space)
+        public static ChessBoardTurn PawnGenerator(ChessBoard board, Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece)
         {
             ChessBoardTurn turn = new ChessBoardTurn();
-            ChessBoardSpace currentSpace = space;
+            ChessBoardSpace currentSpace = piece.Item1;
             ChessBoardMove move;
 
-            if (space.ChessPiece.Color == ChessPieceColor.White)
+            if (piece.Item2.Color == ChessPieceColor.White)
             {
                 //move 1 space
                 move = new ChessBoardMove
@@ -29,7 +29,7 @@ namespace ChessExample.ChessBoard.Core
 
                 ChessBoardTurn temp = new()
                 {
-                    new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                    new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                 };
 
                 if (board.IsValidTurn(temp))
@@ -38,7 +38,7 @@ namespace ChessExample.ChessBoard.Core
                 }
 
                 //move 2 spaces
-                if (!space.ChessPiece.HasPieceBeenMoved)
+                if (!piece.Item2.HasPieceBeenMoved)
                 {
                     move = new ChessBoardMove
                     {
@@ -48,7 +48,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -69,7 +69,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -90,7 +90,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -111,7 +111,7 @@ namespace ChessExample.ChessBoard.Core
 
                 ChessBoardTurn temp = new()
                 {
-                    new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                    new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                 };
 
                 if (board.IsValidTurn(temp))
@@ -120,7 +120,7 @@ namespace ChessExample.ChessBoard.Core
                 }
 
                 //move 2 spaces
-                if (!space.ChessPiece.HasPieceBeenMoved)
+                if (!piece.Item2.HasPieceBeenMoved)
                 {
                     move = new ChessBoardMove
                     {
@@ -130,7 +130,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -151,7 +151,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -172,7 +172,7 @@ namespace ChessExample.ChessBoard.Core
 
                     temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -185,20 +185,20 @@ namespace ChessExample.ChessBoard.Core
             return turn;
         }
 
-        public static ChessBoardTurn QueenGenerator(ChessBoard board, ChessBoardSpace space)
+        public static ChessBoardTurn QueenGenerator(ChessBoard board, Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece)
         {
             // For queen just using validation of bishop AND rook
 
             ChessBoardTurn turn = new ChessBoardTurn();
-            turn.AddRange(BishopGenerator(board, space));
-            turn.AddRange(RookGenerator(board, space));
-            return turn;        
+            turn.AddRange(BishopGenerator(board, piece));
+            turn.AddRange(RookGenerator(board, piece));
+            return turn;
         }
 
-        public static ChessBoardTurn RookGenerator(ChessBoard board, ChessBoardSpace space)
+        public static ChessBoardTurn RookGenerator(ChessBoard board, Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece)
         {
             ChessBoardTurn turn = new ChessBoardTurn();
-            ChessBoardSpace currentSpace = space;
+            ChessBoardSpace currentSpace = piece.Item1;
 
             // Check if each possible
             // move is valid or not
@@ -209,18 +209,18 @@ namespace ChessExample.ChessBoard.Core
                 int x = currentSpace.Column.GetDescriptionFromEnum() + i;
                 int y = currentSpace.Row.GetDescriptionFromEnum();
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -237,18 +237,18 @@ namespace ChessExample.ChessBoard.Core
 
                 x = currentSpace.Column.GetDescriptionFromEnum() - i;
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -270,18 +270,18 @@ namespace ChessExample.ChessBoard.Core
                 int x = currentSpace.Column.GetDescriptionFromEnum();
                 int y = currentSpace.Row.GetDescriptionFromEnum() + i;
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -298,18 +298,18 @@ namespace ChessExample.ChessBoard.Core
 
                 y = currentSpace.Row.GetDescriptionFromEnum() - i;
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -328,10 +328,10 @@ namespace ChessExample.ChessBoard.Core
             return turn;
         }
 
-        public static ChessBoardTurn KnightGenerator(ChessBoard board, ChessBoardSpace space)
+        public static ChessBoardTurn KnightGenerator(ChessBoard board, Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece)
         {
             ChessBoardTurn turn = new ChessBoardTurn();
-            ChessBoardSpace currentSpace = space;
+            ChessBoardSpace currentSpace = piece.Item1;
 
             //knight isn't bad, there are 8 options
 
@@ -358,13 +358,13 @@ namespace ChessExample.ChessBoard.Core
                 int x = currentSpace.Column.GetDescriptionFromEnum() + h[i];
                 int y = currentSpace.Row.GetDescriptionFromEnum() + v[i];
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     if (board.IsValidTurn(temp))
@@ -377,10 +377,10 @@ namespace ChessExample.ChessBoard.Core
             return turn;
         }
 
-        public static ChessBoardTurn BishopGenerator(ChessBoard board, ChessBoardSpace space)
+        public static ChessBoardTurn BishopGenerator(ChessBoard board, Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece)
         {
             ChessBoardTurn turn = new ChessBoardTurn();
-            ChessBoardSpace currentSpace = space;
+            ChessBoardSpace currentSpace = piece.Item1;
 
             // Check if each possible
             // move is valid or not
@@ -390,18 +390,18 @@ namespace ChessExample.ChessBoard.Core
                 int x = currentSpace.Column.GetDescriptionFromEnum() + i;
                 int y = currentSpace.Row.GetDescriptionFromEnum() + i;
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -419,18 +419,18 @@ namespace ChessExample.ChessBoard.Core
                 x = currentSpace.Column.GetDescriptionFromEnum() - i;
                 y = currentSpace.Row.GetDescriptionFromEnum() - i;
 
-                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].ChessPiece == null)
+                if (x >= 0 && y >= 0 && x < board.NumColumns && y < board.NumRows && board.Board[x, y].Item2 == null)
                 {
                     ChessBoardMove move = new() { CurrentSpace = currentSpace, NewSpace = new ChessBoardSpace(x, y) };
 
-                    if (board.Board[x, y].ChessPiece != null && board.Board[x, y].ChessPiece?.Color != space.ChessPiece.Color)
+                    if (board.Board[x, y].Item2 != null && board.Board[x, y].Item2?.Color != piece.Item2.Color)
                     {
                         move.IsCapture = true;
                     }
 
                     ChessBoardTurn temp = new()
                     {
-                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(space.ChessPiece, new List<ChessBoardMove>() { move })
+                        new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(piece.Item2, new List<ChessBoardMove>() { move })
                     };
 
                     try
@@ -456,13 +456,13 @@ namespace ChessExample.ChessBoard.Core
 
             if (Math.Abs(move.NewSpace.Column.GetDescriptionFromEnum() - move.CurrentSpace.Column.GetDescriptionFromEnum()) < 2 && Math.Abs(move.NewSpace.Row.GetDescriptionFromEnum() - move.CurrentSpace.Row.GetDescriptionFromEnum()) < 2)
             {
-                if (board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece == null)
+                if (board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 == null)
                 {
                     return true;
                 }
 
                 // Piece has different color than king
-                return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece?.Color != piece.Color;
+                return board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color != piece.Color;
             }
 
             // Check if king is on begin pos
@@ -486,7 +486,7 @@ namespace ChessExample.ChessBoard.Core
                                     return false;
                                 }
 
-                                if (board.Board[1, 0].ChessPiece == null && board.Board[2, 0].ChessPiece == null && board.Board[3, 0].ChessPiece == null)
+                                if (board.Board[1, 0].Item2 == null && board.Board[2, 0].Item2 == null && board.Board[3, 0].Item2 == null)
                                 {
                                     return true;
                                 }
@@ -500,7 +500,7 @@ namespace ChessExample.ChessBoard.Core
                                     return false;
                                 }
 
-                                if (board.Board[0, 5].ChessPiece == null && board.Board[0, 6].ChessPiece == null)
+                                if (board.Board[0, 5].Item2 == null && board.Board[0, 6].Item2 == null)
                                 {
                                     return true;
                                 }
@@ -517,7 +517,7 @@ namespace ChessExample.ChessBoard.Core
                                     return false;
                                 }
 
-                                if (board.Board[1, 7].ChessPiece == null && board.Board[2, 7].ChessPiece == null && board.Board[3, 7].ChessPiece == null)
+                                if (board.Board[1, 7].Item2 == null && board.Board[2, 7].Item2 == null && board.Board[3, 7].Item2 == null)
                                 {
                                     return true;
                                 }
@@ -531,7 +531,7 @@ namespace ChessExample.ChessBoard.Core
                                     return false;
                                 }
 
-                                if (board.Board[7, 5].ChessPiece == null && board.Board[7, 6].ChessPiece == null)
+                                if (board.Board[7, 5].Item2 == null && board.Board[7, 6].Item2 == null)
                                 {
                                     return true;
                                 }
@@ -549,10 +549,10 @@ namespace ChessExample.ChessBoard.Core
         {
             ChessBoardSpace rookBoardSpace = new ChessBoardSpace(7, (short)(king.Color == ChessPieceColor.White ? 0 : 7));
 
-            return board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].ChessPiece != null
-                   && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].ChessPiece.Type == ChessPieceType.Rook
-                   && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].ChessPiece.Color == king.Color
-                   && !king.HasPieceBeenMoved & !board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].ChessPiece.HasPieceBeenMoved;
+            return board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2 != null
+                   && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.Type == ChessPieceType.Rook
+                   && board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.Color == king.Color
+                   && !king.HasPieceBeenMoved & !board.Board[rookBoardSpace.Column.GetDescriptionFromEnum(), rookBoardSpace.Row.GetDescriptionFromEnum()].Item2.HasPieceBeenMoved;
         }
     }
 }

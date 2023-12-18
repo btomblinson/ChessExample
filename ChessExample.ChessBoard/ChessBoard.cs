@@ -18,7 +18,7 @@ namespace ChessExample.ChessBoard
 
         public readonly int NumRows = 8;
 
-        public ChessBoardSpace[,] Board;
+        public Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[,] Board;
 
         public List<ChessPiece.Core.ChessPiece> WhiteCaptured;
 
@@ -34,7 +34,7 @@ namespace ChessExample.ChessBoard
             BlackCaptured = new List<ChessPiece.Core.ChessPiece>();
             SanNotationMoves = new List<string>();
 
-            Board = new ChessBoardSpace[NumColumns, NumRows];
+            Board = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>[8, 8];
 
             InitializeBoard();
         }
@@ -91,11 +91,11 @@ namespace ChessExample.ChessBoard
                             }
                         }
 
-                        Board[x, y] = new ChessBoardSpace(x, y, new ChessPiece.Core.ChessPiece(type, color));
+                        Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), new ChessPiece.Core.ChessPiece(type, color));
                     }
                     else
                     {
-                        Board[x, y] = new ChessBoardSpace(x, y);
+                        Board[x, y] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(new ChessBoardSpace(x, y), null);
                     }
                 }
             }
@@ -133,26 +133,24 @@ namespace ChessExample.ChessBoard
                 foreach (ChessBoardMove move in piece.Item2)
                 {
                     //remove piece from original place
-                    move.CurrentSpace.ClearChessPiece();
-                    Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()] = move.CurrentSpace;
+                    Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.CurrentSpace, null);
 
                     //move piece to new place
 
                     //if piece is already there kill it
-                    if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece != null)
+                    if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2 != null)
                     {
-                        if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece?.Color == ChessPieceColor.Black)
+                        if (Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2?.Color == ChessPieceColor.Black)
                         {
-                            BlackCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece);
+                            BlackCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
                         }
                         else
                         {
-                            WhiteCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece);
+                            WhiteCaptured.Add(Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2);
                         }
                     }
 
-                    move.NewSpace.SetChessPiece(piece.Item1);
-                    Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()] = move.NewSpace;
+                    Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()] = new Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?>(move.NewSpace, piece.Item1);
 
                     piece.Item1.HasPieceBeenMoved = true;
                 }
@@ -179,7 +177,7 @@ namespace ChessExample.ChessBoard
                 return result;
             }
 
-            //SanNotationMoves.Add(turn.GenerateSanNotation());
+            SanNotationMoves.Add(turn.GenerateSanNotation());
             result.Result = ChessBoardTurnResultType.Continue;
 
             return result;
@@ -198,9 +196,9 @@ namespace ChessExample.ChessBoard
                 {
                     builder.Append(' ');
 
-                    if (Board[x, y].ChessPiece is not null)
+                    if (Board[x, y].Item2 is not null)
                     {
-                        builder.Append(Board[x, y].ChessPiece?.ToFen());
+                        builder.Append(Board[x, y].Item2?.ToFen());
                     }
                     else
                     {

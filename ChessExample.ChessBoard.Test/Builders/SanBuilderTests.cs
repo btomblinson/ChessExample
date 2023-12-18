@@ -242,8 +242,8 @@ namespace ChessExample.ChessBoard.Test.Builders
                 ChessBoardMove move = turn.GetFirstPieceFirstMove();
 
                 //make sure piece moved correctly
-                Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].ChessPiece, Is.EqualTo(null), "Piece did not move.");
-                Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].ChessPiece, Is.EqualTo(turn.GetFirstPiece()), "Piece was not moved to correct location.");
+                Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(null), "Piece did not move.");
+                Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(turn.GetFirstPiece()), "Piece was not moved to correct location.");
             }
 
             return result;

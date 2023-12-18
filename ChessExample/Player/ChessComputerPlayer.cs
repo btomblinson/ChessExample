@@ -27,17 +27,17 @@ namespace ChessExample.Player
                 for (int x = 0; x < 8; x++)
                 {
                     //space is empty skip
-                    if (board.Board[x, y].ChessPiece == null)
+                    if (board.Board[x, y].Item2 == null)
                     {
                         continue;
                     }
 
-                    if (board.Board[x, y].ChessPiece?.Color != Color)
+                    if (board.Board[x, y].Item2?.Color != Color)
                     {
                         continue;
                     }
 
-                    switch (board.Board[x, y].ChessPiece?.Type)
+                    switch (board.Board[x, y].Item2?.Type)
                     {
                         case ChessPieceType.Rook:
                             turn.AddRange(ChessBoardTurnGenerator.RookGenerator(board, board.Board[x, y]));

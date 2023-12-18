@@ -167,9 +167,9 @@ namespace ChessExample.ChessBoard.Builders
 			{
 				for (short y = 0; y < 8; y++)
 				{
-					if (board.Board[x, y].ChessPiece != null
-					    && board.Board[x, y].ChessPiece.Color == piece.Color
-					    && board.Board[x, y].ChessPiece.Type == piece.Type)
+					if (board.Board[x, y].Item2 != null
+					    && board.Board[x, y].Item2.Color == piece.Color
+					    && board.Board[x, y].Item2.Type == piece.Type)
 					{
 						// if original pos == new pos
 						if (newPosition.Column.GetDescriptionFromEnum() == x && newPosition.Row.GetDescriptionFromEnum() == y)
