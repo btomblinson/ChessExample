@@ -27,17 +27,17 @@ namespace ChessExample.Player
                 for (int x = 0; x < 8; x++)
                 {
                     //space is empty skip
-                    if (board.Board[x, y].Item2 == null)
+                    if (board.Board[x, y].ChessPiece == null)
                     {
                         continue;
                     }
 
-                    if (board.Board[x, y].Item2?.Color != Color)
+                    if (board.Board[x, y].ChessPiece?.Color != Color)
                     {
                         continue;
                     }
 
-                    switch (board.Board[x, y].Item2?.Type)
+                    switch (board.Board[x, y].ChessPiece?.Type)
                     {
                         case ChessPieceType.Rook:
                             turn.AddRange(ChessBoardTurnGenerator.RookGenerator(board, board.Board[x, y]));
@@ -63,9 +63,9 @@ namespace ChessExample.Player
             }
 
             //we can capture material, do it
-            if (turn.Any(x => x.Item2.Any(y => y.IsCapture)))
+            if (turn.Any(x => x.Any(y => y.IsCapture)))
             {
-                Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>> move = turn.First(x => x.Item2.Any(y => y.IsCapture));
+                List<ChessBoardMove> move = turn.First(x => x.Any(y => y.IsCapture));
                 turn.Clear();
                 turn.Add(move);
                 return turn;
@@ -74,7 +74,7 @@ namespace ChessExample.Player
             if (turn.Count > 0)
             {
                 Random rnd = new Random();
-                Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>> randomMove = turn[rnd.Next(0, turn.Count)];
+                List<ChessBoardMove> randomMove = turn[rnd.Next(0, turn.Count)];
 
                 turn.Clear();
                 turn.Add(randomMove);

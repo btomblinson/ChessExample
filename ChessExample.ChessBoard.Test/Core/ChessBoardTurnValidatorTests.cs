@@ -17,11 +17,13 @@ namespace ChessExample.ChessBoard.Test.Core
         {
             ChessBoard board = new();
 
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(0, 0), NewSpace = new ChessBoardSpace(0, 2) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
+            move.CurrentSquare = new ChessBoardSquare(0, 0);
+            move.NewSquare = new ChessBoardSquare(0, 2);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.Throws<ChessSameColorException>(() => ChessBoardTurnValidator.RookValidation(board, turn));
@@ -31,11 +33,13 @@ namespace ChessExample.ChessBoard.Test.Core
         public void WhiteKnightSuccessStartOfGame()
         {
             ChessBoard board = new();
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(1, 0), NewSpace = new ChessBoardSpace(2, 2) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White));
+            move.CurrentSquare = new ChessBoardSquare(1, 0);
+            move.NewSquare = new ChessBoardSquare(2, 2);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.That(ChessBoardTurnValidator.KnightValidation(board, turn), Is.EqualTo(true));
@@ -45,11 +49,13 @@ namespace ChessExample.ChessBoard.Test.Core
         public void WhiteBishopFailTestStartOfGame()
         {
             ChessBoard board = new();
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(2, 0), NewSpace = new ChessBoardSpace(1, 1) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Bishop, ChessPieceColor.White));
+            move.CurrentSquare = new ChessBoardSquare(2, 0);
+            move.NewSquare = new ChessBoardSquare(1, 1);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Bishop, ChessPieceColor.White), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.Throws<ChessSameColorException>(() => ChessBoardTurnValidator.BishopValidation(board, turn));
@@ -67,11 +73,13 @@ namespace ChessExample.ChessBoard.Test.Core
         {
             ChessBoard board = new();
 
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(col, row), NewSpace = new ChessBoardSpace(col, row + 2) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.White));
+            move.CurrentSquare = new ChessBoardSquare(col, row);
+            move.NewSquare = new ChessBoardSquare(col, row + 2);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.White), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.That(turn.GenerateSanNotation(), Is.EqualTo($"{col.GetEnumFromDescription<ChessBoardColumn>().GetValueFromEnum().ToLower()}{row + 3}"));
@@ -90,11 +98,13 @@ namespace ChessExample.ChessBoard.Test.Core
         {
             ChessBoard board = new();
 
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(col, row), NewSpace = new ChessBoardSpace(col, row + 1) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.White));
+            move.CurrentSquare = new ChessBoardSquare(col, row);
+            move.NewSquare = new ChessBoardSquare(col, row + 1);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.White), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.That(turn.GenerateSanNotation(), Is.EqualTo($"{col.GetEnumFromDescription<ChessBoardColumn>().GetValueFromEnum().ToLower()}{row + 2}"));
@@ -116,11 +126,13 @@ namespace ChessExample.ChessBoard.Test.Core
         public void BlackPawnMoveTwoStartOfGame(int col, int row, bool expected)
         {
             ChessBoard board = new();
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(col, row), NewSpace = new ChessBoardSpace(col, row - 2) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.Black));
+            move.CurrentSquare = new ChessBoardSquare(col, row);
+            move.NewSquare = new ChessBoardSquare(col, row - 2);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.Black), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.That(turn.GenerateSanNotation(), Is.EqualTo($"{col.GetEnumFromDescription<ChessBoardColumn>().GetValueFromEnum().ToLower()}{row - 1}"));
@@ -139,11 +151,13 @@ namespace ChessExample.ChessBoard.Test.Core
         {
             ChessBoard board = new();
 
-            ChessBoardMove move = new() { CurrentSpace = new ChessBoardSpace(col, row), NewSpace = new ChessBoardSpace(col, row - 1) };
+            ChessBoardMove move = new(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.Black));
+            move.CurrentSquare = new ChessBoardSquare(col, row);
+            move.NewSquare = new ChessBoardSquare(col, row - 1);
 
             ChessBoardTurn turn = new()
             {
-                new Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>(new ChessPiece.Core.ChessPiece(ChessPieceType.Pawn, ChessPieceColor.Black), new List<ChessBoardMove>() { move })
+                new List<ChessBoardMove>() { move }
             };
 
             Assert.That(turn.GenerateSanNotation(), Is.EqualTo($"{col.GetEnumFromDescription<ChessBoardColumn>().GetValueFromEnum().ToLower()}{row}"));

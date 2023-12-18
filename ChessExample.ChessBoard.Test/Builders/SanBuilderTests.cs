@@ -227,23 +227,23 @@ namespace ChessExample.ChessBoard.Test.Builders
                 });
 
                 int currentCapturedPieceCount = 0;
-                if (turn.GetFirstPieceFirstMove().IsCapture)
+                if (turn.GetFirstMove().IsCapture)
                 {
                     currentCapturedPieceCount = board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count;
                 }
 
                 result = board.ExecuteTurn(turn);
 
-                if (turn.GetFirstPieceFirstMove().IsCapture)
+                if (turn.GetFirstMove().IsCapture)
                 {
                     Assert.That(board.CurrentMoveColor == ChessPieceColor.White ? board.BlackCaptured.Count : board.WhiteCaptured.Count, Is.EqualTo(currentCapturedPieceCount + 1), "Captured count is different.");
                 }
 
-                ChessBoardMove move = turn.GetFirstPieceFirstMove();
+                ChessBoardMove move = turn.GetFirstMove();
 
                 //make sure piece moved correctly
-                Assert.That(board.Board[move.CurrentSpace.Column.GetDescriptionFromEnum(), move.CurrentSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(null), "Piece did not move.");
-                Assert.That(board.Board[move.NewSpace.Column.GetDescriptionFromEnum(), move.NewSpace.Row.GetDescriptionFromEnum()].Item2, Is.EqualTo(turn.GetFirstPiece()), "Piece was not moved to correct location.");
+                Assert.That(board.Board[move.CurrentSquare.Column.GetDescriptionFromEnum(), move.CurrentSquare.Row.GetDescriptionFromEnum()].ChessPiece, Is.EqualTo(null), "Piece did not move.");
+                Assert.That(board.Board[move.NewSquare.Column.GetDescriptionFromEnum(), move.NewSquare.Row.GetDescriptionFromEnum()].ChessPiece, Is.EqualTo(turn.GetFirstPiece()), "Piece was not moved to correct location.");
             }
 
             return result;

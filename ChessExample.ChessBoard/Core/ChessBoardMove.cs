@@ -8,20 +8,24 @@ namespace ChessExample.ChessBoard.Core
 {
     public class ChessBoardMove
     {
-        public ChessBoardSpace? CurrentSpace;
+        public ChessBoardSquare? CurrentSquare;
 
-        public ChessBoardSpace? NewSpace;
+        public ChessBoardSquare? NewSquare;
+
+        public ChessPiece.Core.ChessPiece ChessPiece;
 
         public bool IsCapture { get; set; }
 
         public ChessBoardMove()
         {
+            
         }
-
-        public ChessBoardMove(ChessBoardSpace currentSpace, ChessBoardSpace newSpace)
+        
+        public ChessBoardMove(ChessPiece.Core.ChessPiece chessPiece, ChessBoardSquare? currentSquare = null, ChessBoardSquare? newSquare = null)
         {
-            CurrentSpace = currentSpace;
-            NewSpace = newSpace;
+            CurrentSquare = currentSquare;
+            NewSquare = newSquare;
+            ChessPiece = chessPiece;
         }
     }
 }

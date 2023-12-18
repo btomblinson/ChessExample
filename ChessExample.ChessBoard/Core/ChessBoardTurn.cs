@@ -12,7 +12,7 @@ namespace ChessExample.ChessBoard.Core
     /// Represents a list of pieces and their move(s), this object has multiple uses, it can represent a
     /// parsed SAN that is then executed, or used to generate all possible moves 
     /// </summary>
-    public class ChessBoardTurn : List<Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>>>
+    public class ChessBoardTurn : List<List<ChessBoardMove>>
     {
         public bool IsCheck { get; set; }
 
@@ -31,34 +31,24 @@ namespace ChessExample.ChessBoard.Core
                 throw new ArgumentException("Turn is empty");
             }
 
-            return this[0].Item1;
+            return this[0][0].ChessPiece;
         }
 
-        public Tuple<ChessPiece.Core.ChessPiece, List<ChessBoardMove>> GetFirstPieceTuple()
+        public ChessBoardMove GetFirstMove()
         {
             if (this.Count == 0)
             {
                 throw new ArgumentException("Turn is empty");
             }
 
-            return this[0];
-        }
-
-        public List<ChessBoardMove> GetFirstPieceMoves()
-        {
-            return GetFirstPieceTuple().Item2;
-        }
-
-        public ChessBoardMove GetFirstPieceFirstMove()
-        {
-            return GetFirstPieceTuple().Item2[0];
+            return this[0][0];
         }
 
         public string GenerateSanNotation()
         {
             if (Count == 1)
             {
-                switch (this[0].Item1.Type)
+                switch (this[0][0].ChessPiece.Type)
                 {
                     case ChessPieceType.Rook:
                         break;
@@ -71,12 +61,12 @@ namespace ChessExample.ChessBoard.Core
                     case ChessPieceType.Queen:
                         break;
                     case ChessPieceType.Pawn:
-                        if (this[0].Item2.Any(x => x.IsCapture))
+                        if (this[0].Any(x => x.IsCapture))
                         {
-                            return $"{this[0].Item2[0].CurrentSpace.Column.GetValueFromEnum().ToLower()}x{this[0].Item2[0].NewSpace}";
+                            return $"{this[0][0].CurrentSquare.Column.GetValueFromEnum().ToLower()}x{this[0][0].NewSquare}";
                         }
 
-                        return this[0].Item2[0].NewSpace.ToString();
+                        return this[0][0].NewSquare.ToString();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

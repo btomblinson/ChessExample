@@ -12,26 +12,26 @@ namespace ChessExample.ChessBoard.Test.Core
 		public void WhiteKnightGenerateMovesStartOfGame()
 		{
 			ChessBoard board = new();
-			Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece = new(new ChessBoardSpace(1, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White));
+			ChessBoardSpace space = new(new ChessBoardSquare(1, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White));
 
-			Assert.That(ChessBoardTurnGenerator.KnightGenerator(board, piece).Count, Is.EqualTo(2), "Invalid generated moves.");
+			Assert.That(ChessBoardTurnGenerator.KnightGenerator(board, space).Count, Is.EqualTo(2), "Invalid generated moves.");
 
-			piece = new(new ChessBoardSpace(6, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White));
+            space = new(new ChessBoardSquare(6, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Knight, ChessPieceColor.White));
 
-			Assert.That(ChessBoardTurnGenerator.KnightGenerator(board, piece).Count, Is.EqualTo(2), "Invalid generated moves.");
+			Assert.That(ChessBoardTurnGenerator.KnightGenerator(board, space).Count, Is.EqualTo(2), "Invalid generated moves.");
 		}
 
 		[Test]
 		public void WhiteRookGenerateMovesStartOfGame()
 		{
 			ChessBoard board = new();
-			Tuple<ChessBoardSpace, ChessPiece.Core.ChessPiece?> piece = new(new ChessBoardSpace(0, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
+            ChessBoardSpace space = new(new ChessBoardSquare(0, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
 
-            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, piece).Count, Is.EqualTo(0), "Invalid generated moves.");
+            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, space).Count, Is.EqualTo(0), "Invalid generated moves.");
 
-            piece = new(new ChessBoardSpace(7, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
+            space = new(new ChessBoardSquare(7, 0), new ChessPiece.Core.ChessPiece(ChessPieceType.Rook, ChessPieceColor.White));
 
-            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, piece).Count, Is.EqualTo(0), "Invalid generated moves.");
+            Assert.That(ChessBoardTurnGenerator.RookGenerator(board, space).Count, Is.EqualTo(0), "Invalid generated moves.");
         }
 	}
 }

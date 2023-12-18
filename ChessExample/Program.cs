@@ -20,7 +20,12 @@ if (players is < 0 or > 2)
 ChessGame game = new ChessGame(players, new ChessBoard());
 
 //start game
-ChessBoardTurnResult result = new ChessBoardTurnResult() { IsCheck = false, IsCheckmate = false, Result = ChessBoardTurnResultType.Continue };
+ChessBoardTurnResult result = new ChessBoardTurnResult
+{
+    IsCheck = false,
+    IsCheckmate = false,
+    Result = ChessBoardTurnResultType.Continue
+};
 
 int counter = 0;
 while (result.Result == ChessBoardTurnResultType.Continue)

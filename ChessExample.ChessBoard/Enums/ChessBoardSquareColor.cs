@@ -1,6 +1,6 @@
 ﻿namespace ChessExample.ChessBoard.Enums
 {
-	public enum ChessBoardSpaceColor
+	public enum ChessBoardSquareColor
 	{
 		White,
 
