@@ -24,9 +24,9 @@ namespace ChessExample.ChessBoard.Core.EndGame
 			{
 				for (int x = 0; x < 8; x++)
 				{
-					if (Board.Board[x, y].Item2 is not null)
+					if (Board.Board[x, y].ChessPiece is not null)
 					{
-						pieces.Add(Board.Board[x, y].Item2);
+						pieces.Add(Board.Board[x, y].ChessPiece);
 					}
 				}
 			}
@@ -85,7 +85,7 @@ namespace ChessExample.ChessBoard.Core.EndGame
 			{
 				for (short x = 0; x < 8 && bishopsCoords.Count < 2; x++)
 				{
-					if (Board.Board[x, y].Item2.Type == ChessPieceType.Bishop)
+					if (Board.Board[x, y].ChessPiece.Type == ChessPieceType.Bishop)
 					{
 						bishopsCoords.Add(new ChessBoardSpace(x, y));
 					}
